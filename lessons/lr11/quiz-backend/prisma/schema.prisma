@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model AppSettings {
+  id           String   @id @default("settings")
+  mode         String   @default("game")
+  battleConfig Json?
+  updatedAt    DateTime @updatedAt
+}
+
+model User {
+  id                 String    @id @default(cuid())
+  email              String?   @unique
+  name               String?
+  githubId           String    @unique
+  githubUsername     String    @default("")
+  avatarUrl          String    @default("")
+  firstName          String?
+  lastName           String?
+  role               String    @default("student")
+  difficultySettings Json?
+  sessions           Session[]
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?
+  questions   Question[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Question {
+  id              String   @id @default(cuid())
+  text            String
+  type            String
+  difficulty      String   @default("medium")
+  categoryId      String
+  category        Category @relation(fields: [categoryId], references: [id])
+  options         Json?
+  penaltyPerWrong Float?   @default(0.5)
+  minScore        Float?   @default(0)
+  rubric          Json?
+  minLength       Int?
+  maxLength       Int?
+  answers         Answer[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([categoryId])
+  @@index([type])
+  @@index([difficulty])
+  @@index([categoryId, difficulty])
+}
+
+model Session {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  status      String    @default("active")
+  mode        String    @default("game")
+  score       Float?
+  startedAt   DateTime  @default(now())
+  expiresAt   DateTime
+  completedAt DateTime?
+  questions   Json
+  answers     Answer[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([userId, status])
+}
+
+model Answer {
+  id           String   @id @default(cuid())
+  sessionId    String
+  session      Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  questionId   String
+  question     Question @relation(fields: [questionId], references: [id])
+  userAnswer   Json
+  score        Float?
+  isCorrect    Boolean?
+  status       String   @default("pending")
+  feedback     String?
+  rubricScores Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([sessionId, questionId])
+  @@index([sessionId])
+  @@index([questionId])
+  @@index([status])
+}

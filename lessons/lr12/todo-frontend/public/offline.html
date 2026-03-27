@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo PWA — Офлайн</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f8fafc;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+        padding: 24px;
+      }
+      h1 { font-size: 2rem; margin-bottom: 8px; }
+      p { color: #475569; }
+      .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 999px;
+        background: #fee2e2;
+        color: #991b1b;
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div class="badge">offline</div>
+      <h1>Нет соединения</h1>
+      <p>Страница недоступна офлайн.<br/>Проверьте подключение и повторите попытку.</p>
+    </div>
+  </body>
+</html>
